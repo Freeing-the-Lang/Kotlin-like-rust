@@ -1,0 +1,40 @@
+name: "Kotlin-like-Rust — 3OS Build + ProofLedger"
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-3os:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build placeholder
+        shell: bash
+        run: |
+          mkdir -p dist
+          echo "Kotlin-like-Rust placeholder build" > dist/out.txt
+
+      - name: Generate ProofLedger
+        shell: bash
+        run: |
+          echo "ProofLedger for Kotlin-like-Rust" > dist/proofledger.txt
+          sha256sum dist/out.txt >> dist/proofledger.txt || true
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v0.0.${{ github.run_number }}
+          files: |
+            dist/out.txt
+            dist/proofledger.txt
